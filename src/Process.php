@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 1.1.0
+ * @version 1.1.1
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -46,7 +46,7 @@ class Process
 	/**
 	 * Constructor
 	 * @param string $command
-	 * @param bool $autostart
+	 * @param bool $autoStart
 	 * @param bool $killOnDestruction
 	 */
 	public function __construct(string $command, bool $autoStart = true, bool $killOnDestruction = true)
