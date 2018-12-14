@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 1.2.0
+ * @version 2.0.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -86,8 +86,9 @@ class Process
 
 	/**
 	 * Start the process
+	 * @return void
 	 */
-	public function start()
+	public function start(): void
 	{
 		$this->pipes = array();
 		$this->process = proc_open($this->command, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $this->pipes);
@@ -96,8 +97,9 @@ class Process
 	/**
 	 * Kill the process
 	 * @param int $signal
+	 * @return void
 	 */
-	public function kill(int $signal = 15)
+	public function kill(int $signal = 15): void
 	{
 		if (is_resource($this->process))
 		{
@@ -161,9 +163,10 @@ class Process
 	/**
 	 * Write to the process's STDIN
 	 * @param string $data
+	 * @return void
 	 * @throws \Exception
 	 */
-	public function writeSTDIN(string $data)
+	public function writeSTDIN(string $data): void
 	{
 		if (!is_resource($this->pipes[0]))
 		{

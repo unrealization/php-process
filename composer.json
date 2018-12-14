@@ -11,6 +11,6 @@
 	"type" : "library",
 	"license" : "LGPL-2.1",
 	"require" : {
-		"php" : ">=7.0"
+		"php" : ">=7.1"
 	}
 }
