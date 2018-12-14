@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 1.1.1
+ * @version 1.2.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -161,10 +161,15 @@ class Process
 	/**
 	 * Write to the process's STDIN
 	 * @param string $data
-	 * @todo Check if the pipe actually is a resource
+	 * @throws \Exception
 	 */
 	public function writeSTDIN(string $data)
 	{
+		if (!is_resource($this->pipes[0]))
+		{
+			throw new \Exception('Broken pipe');
+		}
+
 		fwrite($this->pipes[0], $data);
 	}
 
@@ -172,32 +177,54 @@ class Process
 	 * Read from the given pipe
 	 * @param resource $pipe
 	 * @return string
-	 * @todo Check if the pipe actually is a resource
+	 * @throws \Exception
 	 */
 	private function readPipe($pipe): string
 	{
+		if (!is_resource($pipe))
+		{
+			throw new \Exception('Broken pipe');
+		}
+
 		stream_set_blocking($pipe, false);
 		stream_set_timeout($pipe, 1);
-		return stream_get_contents($pipe);
+		$response = stream_get_contents($pipe);
+
+		if ($response === false)
+		{
+			throw new \Exception('Nothing to read');
+		}
+
+		return $response;
 	}
 
 	/**
 	 * Read from the process's STDOUT
 	 * @return string
-	 * @todo Check if the pipe actually is a resource
+	 * @throws \Exception
 	 */
 	public function readSTDOUT(): string
 	{
+		if (!is_resource($this->pipes[1]))
+		{
+			throw new \Exception('Broken pipe');
+		}
+
 		return $this->readPipe($this->pipes[1]);
 	}
 
 	/**
 	 * Read from the process's STDERR
 	 * @return string
-	 * @todo Check if the pipe actually is a resource
+	 * @throws \Exception
 	 */
 	public function readSTDERR(): string
 	{
+		if (!is_resource($this->pipes[2]))
+		{
+			throw new \Exception('Broken pipe');
+		}
+
 		return $this->readPipe($this->pipes[2]);
 	}
 }
