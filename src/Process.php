@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 1.2.0
+ * @version 1.3.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -42,6 +42,31 @@ class Process
 	 * @var int
 	 */
 	private $exitCode;
+	/**
+	 * Read from the given pipe
+	 * @param resource $pipe
+	 * @return string
+	 * @throws \Exception
+	 */
+
+	private function readPipe($pipe): string
+	{
+		if (!is_resource($pipe))
+		{
+			throw new \Exception('Broken pipe');
+		}
+		
+		stream_set_blocking($pipe, false);
+		stream_set_timeout($pipe, 1);
+		$response = stream_get_contents($pipe);
+		
+		if ($response === false)
+		{
+			throw new \Exception('Nothing to read');
+		}
+		
+		return $response;
+	}
 
 	/**
 	 * Constructor
@@ -159,6 +184,15 @@ class Process
 	}
 
 	/**
+	 * Get the command executed by the process.
+	 * @return string
+	 */
+	public function getCommand(): string
+	{
+		return $this->command;
+	}
+
+	/**
 	 * Write to the process's STDIN
 	 * @param string $data
 	 * @throws \Exception
@@ -171,31 +205,6 @@ class Process
 		}
 
 		fwrite($this->pipes[0], $data);
-	}
-
-	/**
-	 * Read from the given pipe
-	 * @param resource $pipe
-	 * @return string
-	 * @throws \Exception
-	 */
-	private function readPipe($pipe): string
-	{
-		if (!is_resource($pipe))
-		{
-			throw new \Exception('Broken pipe');
-		}
-
-		stream_set_blocking($pipe, false);
-		stream_set_timeout($pipe, 1);
-		$response = stream_get_contents($pipe);
-
-		if ($response === false)
-		{
-			throw new \Exception('Nothing to read');
-		}
-
-		return $response;
 	}
 
 	/**
