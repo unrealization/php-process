@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 1.1.1
+ * @version 1.2.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -156,6 +156,15 @@ class Process
 		}
 
 		return $this->exitCode;
+	}
+
+	/**
+	 * Get the command executed by the process.
+	 * @return string
+	 */
+	public function getCommand(): string
+	{
+		return $this->command;
 	}
 
 	/**
