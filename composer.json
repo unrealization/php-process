@@ -12,5 +12,8 @@
 	"license" : "LGPL-2.1",
 	"require" : {
 		"php" : ">=7.1"
+	},
+	"require-dev": {
+		"phpdocumentor/phpdocumentor": "^2.9"
 	}
 }
