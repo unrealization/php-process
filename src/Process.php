@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 2.1.2
+ * @version 2.1.3
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -179,7 +179,14 @@ class Process
 	{
 		if (is_null($this->exitCode))
 		{
-			$this->getStatus();
+			try
+			{
+				$this->getStatus();
+			}
+			catch (\Exception $e)
+			{
+				return null;
+			}
 		}
 
 		return $this->exitCode;
