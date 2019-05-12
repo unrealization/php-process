@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 2.1.1
+ * @version 2.1.2
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -41,7 +41,7 @@ class Process
 	 * Exit code of the process
 	 * @var int
 	 */
-	private $exitCode;
+	private $exitCode = null;
 
 	/**
 	 * Read from the given pipe
@@ -146,7 +146,7 @@ class Process
 
 		$status = proc_get_status($this->process);
 
-		if (($status['running'] == false) && (!isset($this->exitCode)))
+		if (($status['running'] == false) && (is_null($this->exitCode)))
 		{
 			$this->exitCode = $status['exitcode'];
 		}
@@ -175,9 +175,9 @@ class Process
 	 * Get the exit code of the application after it has stopped
 	 * @return int
 	 */
-	public function getExitCode(): int
+	public function getExitCode(): ?int
 	{
-		if (!isset($this->exitCode))
+		if (is_null($this->exitCode))
 		{
 			$this->getStatus();
 		}
