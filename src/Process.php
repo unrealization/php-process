@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 2.1.3
+ * @version 2.1.4
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -34,12 +34,12 @@ class Process
 	private $process;
 	/**
 	 * IO pipes
-	 * @var array
+	 * @var resource[]
 	 */
 	private $pipes = array();
 	/**
 	 * Exit code of the process
-	 * @var int
+	 * @var int|NULL
 	 */
 	private $exitCode = null;
 
@@ -73,6 +73,7 @@ class Process
 	 * @param string $command
 	 * @param bool $autoStart
 	 * @param bool $killOnDestruction
+	 * @throws \Exception
 	 */
 	public function __construct(string $command, bool $autoStart = true, bool $killOnDestruction = true)
 	{
@@ -81,18 +82,33 @@ class Process
 
 		if ($autoStart === true)
 		{
-			$this->start();
+			try
+			{
+				$this->start();
+			}
+			catch (\Exception $e)
+			{
+				throw new \Exception('Failed to start the process.', 0, $e);
+			}
 		}
 	}
 
 	/**
 	 * Destructor
+	 * @throws \Exception
 	 */
 	public function __destruct()
 	{
 		if (($this->killOnDestruction === true) && ($this->isRunning()))
 		{
-			$this->kill();
+			try
+			{
+				$this->kill();
+			}
+			catch (\Exception $e)
+			{
+				throw new \Exception('Failed to kill the process.', 0, $e);
+			}
 		}
 
 		foreach ($this->pipes as $key => $pipe)
@@ -112,24 +128,37 @@ class Process
 	/**
 	 * Start the process
 	 * @return void
+	 * @throws \Exception
 	 */
 	public function start(): void
 	{
+		if (is_resource($this->process))
+		{
+			throw new \Exception('The process has been started already.');
+		}
+
 		$this->pipes = array();
 		$this->process = proc_open($this->command, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $this->pipes);
+
+		if ($this->process === false)
+		{
+			throw new \Exception('Failed to start the process.');
+		}
 	}
 
 	/**
 	 * Kill the process
 	 * @param int $signal
-	 * @return void
+	 * @return bool
 	 */
-	public function kill(int $signal = 15): void
+	public function kill(int $signal = 15): bool
 	{
-		if (is_resource($this->process))
+		if (!is_resource($this->process))
 		{
-			proc_terminate($this->process, $signal);
+			throw new \Exception('The process is not running.');
 		}
+
+		return proc_terminate($this->process, $signal);
 	}
 
 	/**
@@ -173,7 +202,7 @@ class Process
 
 	/**
 	 * Get the exit code of the application after it has stopped
-	 * @return int
+	 * @return int|NULL
 	 */
 	public function getExitCode(): ?int
 	{
@@ -229,7 +258,14 @@ class Process
 			throw new \Exception('Broken pipe');
 		}
 
-		return $this->readPipe($this->pipes[1]);
+		try
+		{
+			return $this->readPipe($this->pipes[1]);
+		}
+		catch (\Exception $e)
+		{
+			throw new \Exception('Cannot read STDOUT.', 0, $e);
+		}
 	}
 
 	/**
@@ -244,7 +280,14 @@ class Process
 			throw new \Exception('Broken pipe');
 		}
 
-		return $this->readPipe($this->pipes[2]);
+		try
+		{
+			return $this->readPipe($this->pipes[2]);
+		}
+		catch (\Exception $e)
+		{
+			throw new \Exception('Cannot read STDERR.', 0, $e);
+		}
 	}
 }
 ?>
