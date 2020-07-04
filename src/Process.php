@@ -12,7 +12,7 @@ namespace unrealization\PHPClassCollection;
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 2.1.4
+ * @version 2.1.5
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -82,14 +82,7 @@ class Process
 
 		if ($autoStart === true)
 		{
-			try
-			{
-				$this->start();
-			}
-			catch (\Exception $e)
-			{
-				throw new \Exception('Failed to start the process.', 0, $e);
-			}
+			$this->start();
 		}
 	}
 
@@ -101,14 +94,7 @@ class Process
 	{
 		if (($this->killOnDestruction === true) && ($this->isRunning()))
 		{
-			try
-			{
-				$this->kill();
-			}
-			catch (\Exception $e)
-			{
-				throw new \Exception('Failed to kill the process.', 0, $e);
-			}
+			$this->kill();
 		}
 
 		foreach ($this->pipes as $key => $pipe)
@@ -258,14 +244,7 @@ class Process
 			throw new \Exception('Broken pipe');
 		}
 
-		try
-		{
-			return $this->readPipe($this->pipes[1]);
-		}
-		catch (\Exception $e)
-		{
-			throw new \Exception('Cannot read STDOUT.', 0, $e);
-		}
+		return $this->readPipe($this->pipes[1]);
 	}
 
 	/**
@@ -280,14 +259,6 @@ class Process
 			throw new \Exception('Broken pipe');
 		}
 
-		try
-		{
-			return $this->readPipe($this->pipes[2]);
-		}
-		catch (\Exception $e)
-		{
-			throw new \Exception('Cannot read STDERR.', 0, $e);
-		}
+		return $this->readPipe($this->pipes[2]);
 	}
 }
-?>
