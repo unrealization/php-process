@@ -6,13 +6,13 @@ declare(strict_types=1);
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
  */
-namespace unrealization\PHPClassCollection;
+namespace unrealization;
 /**
  * @package PHPClassCollection
  * @subpackage Process
  * @link http://php-classes.sourceforge.net/ PHP Class Collection
  * @author Dennis Wronka <reptiler@users.sourceforge.net>
- * @version 2.1.5
+ * @version 3.0.0
  * @license http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html LGPL 2.1
  */
 class Process
@@ -21,12 +21,12 @@ class Process
 	 * The command line to be executed
 	 * @var string
 	 */
-	private $command;
+	private string $command;
 	/**
 	 * Determins if the process is killed by the destructor or if it should wait for the process to finish
 	 * @var bool
 	 */
-	private $killOnDestruction;
+	private bool $killOnDestruction;
 	/**
 	 * Process resource
 	 * @var resource
@@ -36,12 +36,12 @@ class Process
 	 * IO pipes
 	 * @var resource[]
 	 */
-	private $pipes = array();
+	private array $pipes = array();
 	/**
 	 * Exit code of the process
 	 * @var int|NULL
 	 */
-	private $exitCode = null;
+	private ?int $exitCode = null;
 
 	/**
 	 * Read from the given pipe
