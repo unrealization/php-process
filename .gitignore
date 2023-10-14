@@ -1,2 +1,9 @@
-composer.lock
-vendor/
+/.buildpath
+/.phpunit.cache
+/.project
+/.settings
+/vendor
+/coverage
+/docs
+/unittest.xml
+/composer.lock
