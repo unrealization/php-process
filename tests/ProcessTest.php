@@ -19,6 +19,14 @@ class ProcessTest extends TestCase
 		$proc->getStatus();
 	}
 
+	public function testRestart()
+	{
+		$proc = new Process('sleep 2', true);
+		$this->assertTrue($proc->isRunning());
+		$this->expectException(\Exception::class);
+		$proc->start();
+	}
+
 	public function testKill()
 	{
 		$proc = new Process('sleep 5', true);
@@ -28,6 +36,39 @@ class ProcessTest extends TestCase
 		while ($proc->isRunning()) {}
 
 		$this->assertFalse($proc->isRunning());
+	}
+
+	public function testAutoKill()
+	{
+		$proc = new Process('sleep 5', true);
+		$this->assertTrue($proc->isRunning());
+		unset($proc);
+	}
+
+	public function testKillNonRunning()
+	{
+		$proc = new Process('ls', false);
+		$this->assertInstanceOf(Process::class, $proc);
+		$this->assertFalse($proc->isRunning());
+		$this->expectException(\Exception::class);
+		$proc->kill(SIGTERM);
+	}
+
+	public function testExitCode()
+	{
+		$proc = new Process('exit 1', true);
+
+		while ($proc->isRunning()) {}
+
+		$exitCode = $proc->getExitCode();
+		$this->assertSame(1, $exitCode);
+
+		$proc = new Process('exit 5', true);
+
+		while ($proc->isRunning()) {}
+
+		$exitCode = $proc->getExitCode();
+		$this->assertSame(5, $exitCode);
 	}
 
 	public function testOutput()
@@ -42,7 +83,7 @@ class ProcessTest extends TestCase
 
 		$this->assertSame('ProcessTest.php'.PHP_EOL, $output);
 
-		$proc = new Process('ls /xxx/'.__DIR__, true);
+		$proc = new Process('ls /.test_xxx_test/'.__DIR__, true);
 		$output = '';
 
 		while ($proc->isRunning())
