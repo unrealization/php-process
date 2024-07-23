@@ -137,7 +137,7 @@ class Process
 	 * @param int $signal
 	 * @return bool
 	 */
-	public function kill(int $signal = 15): bool
+	public function kill(int $signal = SIGTERM): bool
 	{
 		if (!is_resource($this->process))
 		{
